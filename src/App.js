@@ -1,16 +1,18 @@
 import './App.css';
 import styled from "styled-components";
 import { useEffect, useState } from 'react';
-import tiger from './images/tigerhead.PNG';
+import tiger from './images/tigerhead_small.png';
+import brick from './images/brick.png';
 
 // Constants 
-const PLAYER_SIZE = 20;
+const PLAYER_SIZE = 25;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 500;
 const GRAVITY = 4;
 const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 40;
-const OBSTACLE_GAP = 200;
+const OBSTACLE_GAP = 180;
+const PADDING_TOP = 30;
 
 function App() {
   const [playerPosition, setPlayerPosition] = useState(250);
@@ -25,7 +27,7 @@ function App() {
   // Player falling logic
   useEffect(()=> {
     let timeId;
-    if(gameHasStarted && playerPosition < GAME_HEIGHT-PLAYER_SIZE) {
+    if(gameHasStarted && playerPosition < GAME_HEIGHT-PLAYER_SIZE + PADDING_TOP) {
       timeId = setInterval(() => {
         setPlayerPosition(playerPosition + GRAVITY);
       }, 24);
@@ -57,8 +59,8 @@ function App() {
    * Collision Logic
    */
   useEffect(() => {
-    const hasCollidedTop = playerPosition >= 0 && playerPosition < obstacleHeight;
-    const hasCollidedBottom = playerPosition <= GAME_HEIGHT && playerPosition >= GAME_HEIGHT - bottomObstacleHeight;
+    const hasCollidedTop = playerPosition >= PADDING_TOP && playerPosition < obstacleHeight+PADDING_TOP;
+    const hasCollidedBottom = playerPosition <= GAME_HEIGHT+PADDING_TOP && playerPosition >= GAME_HEIGHT+PADDING_TOP - bottomObstacleHeight;
 
     if(obstacleLeft >= 0 && obstacleLeft <= OBSTACLE_WIDTH && (hasCollidedBottom || hasCollidedTop)) {
       setGameHasStarted(false);
@@ -77,14 +79,15 @@ function App() {
       setPlayerPosition(GAME_HEIGHT/2);
     }
     // Above game bounds
-    else if (newPosition < 0) {
-      setPlayerPosition(0);
+    else if (newPosition < PADDING_TOP) {
+      setPlayerPosition(PADDING_TOP);
     } else {
       setPlayerPosition(newPosition);
     }
   }
 
   return (
+    <div class="App">
     <Game onClick={handleClick}>
       <GameBox height={GAME_HEIGHT} width={GAME_WIDTH}>
         <Obstacle 
@@ -92,17 +95,20 @@ function App() {
           width={OBSTACLE_WIDTH} 
           height={obstacleHeight} 
           left={obstacleLeft}
+          src={brick}
         />
         <Obstacle 
           top={GAME_HEIGHT - (obstacleHeight + bottomObstacleHeight)} 
           width={OBSTACLE_WIDTH} 
           height={bottomObstacleHeight} 
           left={obstacleLeft}
+          src={brick}
         />
         <Player size={PLAYER_SIZE} src={tiger} top={playerPosition}/>
       </GameBox>
       <span>{score}</span>
     </Game>
+    </div>
   );
 }
 
@@ -111,7 +117,6 @@ export default App;
 const Player = styled.div`
   position: absolute;
   background-image: url("${(props) => props.src}");
-  background-color: red;
   height: ${(props) => props.size}px;
   width: ${(props) => props.size}px;
   top: ${(props) => props.top}px;
@@ -132,6 +137,7 @@ const GameBox = styled.div`
 
 const Obstacle = styled.div`
   position: relative;
+  background-image: url("${(props) => props.src}");
   top: ${(props) => props.top}px;
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
