@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { useEffect, useState } from 'react';
 import tiger from './images/tigerhead_small.png';
 import brick from './images/brick.png';
+import flap from './sounds/flap.mp3';
+import hit from './sounds/hit.mp3';
+import point from './sounds/point.mp3';
+
 
 // Constants 
 const PLAYER_SIZE = 25;
@@ -13,6 +17,9 @@ const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 40;
 const OBSTACLE_GAP = 180;
 const PADDING_TOP = 30;
+const FLAP_SOUND = new Audio(flap);
+const HIT_SOUND = new Audio(hit);
+const POINT_SOUND = new Audio(point);
 
 function App() {
   const [playerPosition, setPlayerPosition] = useState(250);
@@ -52,6 +59,7 @@ function App() {
       setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
       setObstacleHeight(Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP)));
       setScore(score => score + 1);
+      POINT_SOUND.play();
     }
   }, [gameHasStarted, obstacleLeft]);
 
@@ -63,7 +71,8 @@ function App() {
     const hasCollidedBottom = playerPosition <= GAME_HEIGHT+PADDING_TOP && playerPosition >= GAME_HEIGHT+PADDING_TOP - bottomObstacleHeight;
 
     if(obstacleLeft >= 0 && obstacleLeft <= OBSTACLE_WIDTH && (hasCollidedBottom || hasCollidedTop)) {
-      setGameHasStarted(false);
+      setGameHasStarted(false); 
+      HIT_SOUND.play();
     }  
   }, [playerPosition, obstacleHeight, bottomObstacleHeight, obstacleLeft]);
 
@@ -84,6 +93,7 @@ function App() {
     } else {
       setPlayerPosition(newPosition);
     }
+    FLAP_SOUND.play();
   }
 
   return (
@@ -131,7 +141,7 @@ const Game = styled.div`
 const GameBox = styled.div`
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
-  background-color: blue;
+  background-color: #91b1ff;
   overflow: hidden;
 `;
 
