@@ -9,7 +9,8 @@ import point from './sounds/point.mp3';
 
 
 // Constants 
-const PLAYER_SIZE = 25;
+const PLAYER_HEIGHT = 25;
+const PLAYER_WIDTH = 29;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 500;
 const GRAVITY = 4;
@@ -34,7 +35,7 @@ function App() {
   // Player falling logic
   useEffect(()=> {
     let timeId;
-    if(gameHasStarted && playerPosition < GAME_HEIGHT-PLAYER_SIZE + PADDING_TOP) {
+    if(gameHasStarted && playerPosition < GAME_HEIGHT-PLAYER_HEIGHT + PADDING_TOP) {
       timeId = setInterval(() => {
         setPlayerPosition(playerPosition + GRAVITY);
       }, 24);
@@ -100,6 +101,7 @@ function App() {
     <div class="App">
     <Game onClick={handleClick}>
       <GameBox height={GAME_HEIGHT} width={GAME_WIDTH}>
+        
         <Obstacle 
           top={0} 
           width={OBSTACLE_WIDTH} 
@@ -114,10 +116,10 @@ function App() {
           left={obstacleLeft}
           src={brick}
         />
-        <Player size={PLAYER_SIZE} src={tiger} top={playerPosition}/>
+        <Player height={PLAYER_HEIGHT} width={PLAYER_WIDTH} src={tiger} top={playerPosition}/>
       </GameBox>
-      <span>{score}</span>
     </Game>
+    <div>Score: {score}</div>
     </div>
   );
 }
@@ -127,8 +129,8 @@ export default App;
 const Player = styled.div`
   position: absolute;
   background-image: url("${(props) => props.src}");
-  height: ${(props) => props.size}px;
-  width: ${(props) => props.size}px;
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
   top: ${(props) => props.top}px;
 `;
 
