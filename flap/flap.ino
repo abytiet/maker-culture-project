@@ -49,9 +49,9 @@ void loop() {
   // Read acceleration
   if (IMU.accelerationAvailable()) {
     IMU.readAcceleration(x, y, z);
-    if(y > 1) {
+    if(y > .7) {
       up = true;
-    } else if (y < -1) {
+    } else if (y < -.7) {
       down = true;
     } else if (up && down) {
       Mouse.click();

@@ -38,7 +38,7 @@ function App() {
     if(gameHasStarted && playerPosition < GAME_HEIGHT-PLAYER_HEIGHT + PADDING_TOP) {
       timeId = setInterval(() => {
         setPlayerPosition(playerPosition + GRAVITY);
-      }, 24);
+      }, 20);
     }
 
     return () => {
@@ -52,15 +52,17 @@ function App() {
     if(gameHasStarted && obstacleLeft >= -OBSTACLE_WIDTH) {
       obstacleId = setInterval(() => {
         setObstacleLeft((obstacleLeft) => obstacleLeft - 5);
-      }, 24)
+      }, 20)
       return () => {
         clearInterval(obstacleId);
       }; 
     } else {
       setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
       setObstacleHeight(Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP)));
-      setScore(score => score + 1);
-      POINT_SOUND.play();
+      if(gameHasStarted) {
+        setScore(score => score + 1);
+        POINT_SOUND.play();
+      }
     }
   }, [gameHasStarted, obstacleLeft]);
 
@@ -153,6 +155,5 @@ const Obstacle = styled.div`
   top: ${(props) => props.top}px;
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
-  background-color: green;
   left: ${(props) => props.left}px;
 `;
