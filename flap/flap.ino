@@ -25,7 +25,8 @@
 
 // Initialize Coordinates
 float x, y, z;
-int lastY = 0;
+boolean up = false;
+boolean down = false;
 
 void setup() {
   Mouse.begin();
@@ -48,10 +49,15 @@ void loop() {
   // Read acceleration
   if (IMU.accelerationAvailable()) {
     IMU.readAcceleration(x, y, z);
-    if(y-lastY > 1) {
-      Serial.print("Mouse Click! \t");
+    if(y > 1) {
+      up = true;
+    } else if (y < -1) {
+      down = true;
+    } else if (up && down) {
       Mouse.click();
-    } 
-    lastY = y;
+      Serial.println("Click");
+      up = false;
+      down = false;
+    }
   }
 }
